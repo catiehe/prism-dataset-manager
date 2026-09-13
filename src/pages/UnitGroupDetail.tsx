@@ -35,7 +35,7 @@ export function UnitGroupDetail() {
   const admin = ds.administrativeInformation
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Link to="/open-data/unit_group" className="text-sm text-muted-foreground hover:underline">
         ← Back to Unit Groups
       </Link>
@@ -45,14 +45,14 @@ export function UnitGroupDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="flex-wrap">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Unit group information</TabsTrigger>
               <TabsTrigger value="model">Modelling and validation</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
               <TabsTrigger value="units">Units</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="info" className="flex flex-col gap-6 pt-6">
               <p className="text-muted-foreground text-xs">ID: {dataset.id}</p>
               <LangRow label="Name" value={info.dataSetInformation.name} />
               {info.dataSetInformation.classification.length > 0 && (
@@ -66,7 +66,7 @@ export function UnitGroupDetail() {
               <LangRow label="General comment" value={info.dataSetInformation.generalComment} />
             </TabsContent>
 
-            <TabsContent value="model" className="pt-4">
+            <TabsContent value="model" className="pt-6">
               {model.complianceDeclarations.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No compliance declarations.</p>
               ) : (
@@ -89,14 +89,14 @@ export function UnitGroupDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
               <div>
                 <p className="text-sm font-medium">Data set version</p>
                 <p className="text-muted-foreground text-sm">{admin.dataSetVersion}</p>
               </div>
             </TabsContent>
 
-            <TabsContent value="units" className="pt-4">
+            <TabsContent value="units" className="pt-6">
               <Table>
                 <TableHeader>
                   <TableRow>

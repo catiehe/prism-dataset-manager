@@ -76,15 +76,15 @@ export function DatasetList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead className="whitespace-nowrap">Name</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {datasets.map((d) => (
               <TableRow key={d.id}>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <Link
                     to={`/open-data/${typeInfo.type}/${d.id}`}
                     className="text-primary hover:underline"
@@ -92,10 +92,13 @@ export function DatasetList() {
                     {d.name}
                   </Link>
                 </TableCell>
-                <TableCell className="text-muted-foreground">
+                <TableCell
+                  className="max-w-0 w-full truncate text-muted-foreground"
+                  title={d.description ?? undefined}
+                >
                   {d.description}
                 </TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-1">
                     <Button
                       asChild

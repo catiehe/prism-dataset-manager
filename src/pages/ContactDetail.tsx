@@ -25,7 +25,7 @@ export function ContactDetail() {
   const admin = ds.administrativeInformation
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Link to="/open-data/contact" className="text-sm text-muted-foreground hover:underline">
         ← Back to Contacts
       </Link>
@@ -35,12 +35,12 @@ export function ContactDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="flex-wrap">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Contact information</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="info" className="flex flex-col gap-6 pt-6">
               <p className="text-muted-foreground text-xs">ID: {dataset.id}</p>
               <LangRow label="Short name" value={info.shortName} />
               <LangRow label="Name" value={info.name} />
@@ -98,7 +98,7 @@ export function ContactDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
               {admin.referenceToOwnershipOfDataSet.shortDescription && (
                 <div>
                   <p className="text-sm font-medium">Reference to ownership of data set</p>

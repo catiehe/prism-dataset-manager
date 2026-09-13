@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import {
   Boxes,
   Component,
@@ -36,8 +36,11 @@ const ICONS: Record<DatasetType, React.ComponentType<{ className?: string }>> = 
   contact: Contact,
 }
 
+const ACTIVE_CLASS =
+  "data-active:bg-neutral-200 data-active:text-neutral-900 dark:data-active:bg-neutral-700 dark:data-active:text-neutral-50"
+
 export function AppSidebar() {
-  const { type: activeType } = useParams<{ type: string }>()
+  const activeType = useLocation().pathname.match(/^\/open-data\/([^/]+)/)?.[1]
   const session = useSessionStore((s) => s.session)
 
   return (
@@ -63,6 +66,7 @@ export function AppSidebar() {
                       asChild
                       tooltip={label}
                       isActive={activeType === type}
+                      className={ACTIVE_CLASS}
                     >
                       <Link to={`/open-data/${type}`}>
                         <Icon className="size-4" />

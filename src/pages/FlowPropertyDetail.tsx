@@ -47,7 +47,7 @@ export function FlowPropertyDetail() {
   const referenceUnitName = unitGroup?.units.find((u) => u.dataSetInternalID === refUnitId)?.name
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Link to="/open-data/flow_property" className="text-sm text-muted-foreground hover:underline">
         ← Back to Flow Properties
       </Link>
@@ -57,13 +57,13 @@ export function FlowPropertyDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="flex-wrap">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Flow property information</TabsTrigger>
               <TabsTrigger value="model">Modelling and validation</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="info" className="flex flex-col gap-6 pt-6">
               <p className="text-muted-foreground text-xs">ID: {dataset.id}</p>
               <LangRow label="Name" value={info.dataSetInformation.name} />
               {info.dataSetInformation.classification.length > 0 && (
@@ -99,7 +99,7 @@ export function FlowPropertyDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="model" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="model" className="flex flex-col gap-6 pt-6">
               {model.referenceToDataSource.shortDescription && (
                 <div>
                   <p className="text-sm font-medium">Reference to data source</p>
@@ -130,7 +130,7 @@ export function FlowPropertyDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
               <div>
                 <p className="text-sm font-medium">Data set version</p>
                 <p className="text-muted-foreground text-sm">{admin.dataSetVersion}</p>

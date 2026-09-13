@@ -157,7 +157,7 @@ export function FlowForm() {
   }
 
   return (
-    <Card className="mx-auto max-w-3xl">
+    <Card className="mx-auto max-w-4xl">
       <CardHeader>
         <CardTitle>{id ? "Edit" : "Add"} Flow</CardTitle>
       </CardHeader>
@@ -171,13 +171,13 @@ export function FlowForm() {
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Tabs defaultValue="info">
-              <TabsList className="flex-wrap">
+              <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
                 <TabsTrigger value="info">Flow information</TabsTrigger>
                 <TabsTrigger value="model">Modelling and validation</TabsTrigger>
                 <TabsTrigger value="admin">Administrative information</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+              <TabsContent value="info" className="flex flex-col gap-6 pt-6">
                 <LangTextField
                   label="Base name"
                   required
@@ -270,7 +270,7 @@ export function FlowForm() {
                 />
               </TabsContent>
 
-              <TabsContent value="model" className="flex flex-col gap-4 pt-4">
+              <TabsContent value="model" className="flex flex-col gap-6 pt-6">
                 <div className="flex flex-col gap-2">
                   <Label>Type of dataset</Label>
                   <Select
@@ -403,7 +403,7 @@ export function FlowForm() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+              <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <div className="flex flex-1 flex-col gap-2">
                     <Label htmlFor="dataSetVersion">Data set version</Label>

@@ -81,7 +81,7 @@ export function SourceForm() {
   }
 
   return (
-    <Card className="mx-auto max-w-3xl">
+    <Card className="mx-auto max-w-4xl">
       <CardHeader>
         <CardTitle>{id ? "Edit" : "Add"} Source</CardTitle>
       </CardHeader>
@@ -95,12 +95,12 @@ export function SourceForm() {
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Tabs defaultValue="info">
-              <TabsList className="flex-wrap">
+              <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
                 <TabsTrigger value="info">Source information</TabsTrigger>
                 <TabsTrigger value="admin">Administrative information</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+              <TabsContent value="info" className="flex flex-col gap-6 pt-6">
                 <LangTextField
                   label="Short name"
                   required
@@ -158,7 +158,7 @@ export function SourceForm() {
                 />
               </TabsContent>
 
-              <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+              <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
                 <DatasetRefField
                   label="Reference to ownership of data set"
                   value={admin.referenceToOwnershipOfDataSet}

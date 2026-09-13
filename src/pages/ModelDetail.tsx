@@ -40,7 +40,7 @@ export function ModelDetail() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Link to="/open-data/model" className="text-sm text-muted-foreground hover:underline">
         ← Back to Models
       </Link>
@@ -50,14 +50,14 @@ export function ModelDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="flex-wrap">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Model information</TabsTrigger>
               <TabsTrigger value="model">Modelling and validation</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
               <TabsTrigger value="instances">Process instances</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="info" className="flex flex-col gap-6 pt-6">
               <p className="text-muted-foreground text-xs">ID: {dataset.id}</p>
               <LangRow label="Base name" value={info.dataSetInformation.name.baseName} />
               <LangRow
@@ -79,7 +79,7 @@ export function ModelDetail() {
               <LangRow label="General comment" value={info.dataSetInformation.generalComment} />
             </TabsContent>
 
-            <TabsContent value="model" className="pt-4">
+            <TabsContent value="model" className="pt-6">
               {model.complianceDeclarations.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No compliance declarations.</p>
               ) : (
@@ -102,7 +102,7 @@ export function ModelDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
               {admin.referenceToCommissioner.shortDescription && (
                 <div>
                   <p className="text-sm font-medium">Reference to commissioner</p>
@@ -132,7 +132,7 @@ export function ModelDetail() {
               )}
             </TabsContent>
 
-            <TabsContent value="instances" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="instances" className="flex flex-col gap-6 pt-6">
               <Table>
                 <TableHeader>
                   <TableRow>

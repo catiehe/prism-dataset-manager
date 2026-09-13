@@ -184,7 +184,7 @@ export function ProcessDetail() {
   const outputs = ds.exchanges.filter((ex) => ex.exchangeDirection === "Output")
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Link
         to="/open-data/process"
         className="text-sm text-muted-foreground hover:underline"
@@ -197,7 +197,7 @@ export function ProcessDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="flex-wrap">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Process information</TabsTrigger>
               <TabsTrigger value="model">Modelling and validation</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
@@ -207,7 +207,7 @@ export function ProcessDetail() {
               <TabsTrigger value="compliance">Compliance declarations</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="info" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="info" className="flex flex-col gap-6 pt-6">
               <p className="text-muted-foreground text-xs">ID: {dataset.id}</p>
               <LangRow label="Base name" value={info.dataSetInformation.name.baseName} />
               <LangRow
@@ -244,7 +244,7 @@ export function ProcessDetail() {
               </div>
             </TabsContent>
 
-            <TabsContent value="model" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="model" className="flex flex-col gap-6 pt-6">
               <div>
                 <p className="text-sm font-medium">Type of dataset</p>
                 <p className="text-muted-foreground text-sm">{model.typeOfDataSet || "-"}</p>
@@ -265,7 +265,7 @@ export function ProcessDetail() {
               />
             </TabsContent>
 
-            <TabsContent value="admin" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="admin" className="flex flex-col gap-6 pt-6">
               <div>
                 <p className="text-sm font-medium">Reference to commissioner</p>
                 <p className="text-muted-foreground text-sm">
@@ -303,7 +303,7 @@ export function ProcessDetail() {
               </div>
             </TabsContent>
 
-            <TabsContent value="io" className="flex flex-col gap-6 pt-4">
+            <TabsContent value="io" className="flex flex-col gap-6 pt-6">
               <ExchangeTable
                 title="Input"
                 exchanges={inputs}
@@ -322,7 +322,7 @@ export function ProcessDetail() {
               />
             </TabsContent>
 
-            <TabsContent value="lcia" className="flex flex-col gap-4 pt-4">
+            <TabsContent value="lcia" className="flex flex-col gap-6 pt-6">
               <div>
                 <p className="text-sm font-medium">LCIA Profile</p>
                 <p className="text-muted-foreground text-sm">
@@ -375,13 +375,13 @@ export function ProcessDetail() {
               </Table>
             </TabsContent>
 
-            <TabsContent value="validation" className="pt-4">
+            <TabsContent value="validation" className="pt-6">
               <p className="text-muted-foreground text-sm">
                 No validation records available. This process has not been reviewed.
               </p>
             </TabsContent>
 
-            <TabsContent value="compliance" className="pt-4">
+            <TabsContent value="compliance" className="pt-6">
               {model.complianceDeclarations.length === 0 ? (
                 <p className="text-muted-foreground text-sm">No compliance declarations.</p>
               ) : (
