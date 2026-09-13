@@ -50,7 +50,7 @@ export function ModelDetail() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="info">
-            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-1 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
+            <TabsList className="h-auto w-full flex-wrap items-start justify-start gap-2 p-2 group-data-horizontal/tabs:h-auto [&>*]:flex-none">
               <TabsTrigger value="info">Model information</TabsTrigger>
               <TabsTrigger value="model">Modelling and validation</TabsTrigger>
               <TabsTrigger value="admin">Administrative information</TabsTrigger>
