@@ -1,0 +1,102 @@
+{
+  "input_dir": "/tmp/prism-tidas-with-models.asmlCb/tidas",
+  "ok": true,
+  "summary": {
+    "category_count": 8,
+    "issue_count": 0,
+    "error_count": 0,
+    "warning_count": 0,
+    "info_count": 0
+  },
+  "categories": [
+    {
+      "category": "contacts",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "flowproperties",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "flows",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "lciamethods",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "lifecyclemodels",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "processes",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "sources",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    },
+    {
+      "category": "unitgroups",
+      "ok": true,
+      "summary": {
+        "issue_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "info_count": 0
+      },
+      "issues": []
+    }
+  ],
+  "issues": []
+}

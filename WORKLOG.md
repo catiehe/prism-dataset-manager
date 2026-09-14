@@ -4,6 +4,7 @@
 - Rebuilt `supabase/seed.sql` from the live 77-row Supabase dataset (10 models, 18 processes, 31 flows, 4 flow properties, 4 unit groups, and 10 sources). The seed now upserts the live snapshot and removes only the 40 obsolete fixed-id sample rows from the previous 58-row seed.
 - Added `scripts/export_seed.py` so the checked-in SQL snapshot can be regenerated deterministically from `.env` after future intentional live-data changes.
 - Closed Phase 6 without further Model page work: the user confirmed screenshot-level Model synchronization is not required.
+- Extended `scripts/export_tidas.py` to add the 10 PRISM graphs as official-schema TIDAS `lifecyclemodels` after the EcoSpold conversion. Generated both a complete 59-record package and a 10-model-only package for accounts that already imported the earlier 49 flow/process records; official `tidas-tools` validation reports zero issues.
 
 ## 2026-09-07
 - Reviewed [tiangong-lca-next](https://github.com/linancn/tiangong-lca-next) to understand the source platform (UmiJS + Ant Design Pro + Supabase LCA authoring tool).

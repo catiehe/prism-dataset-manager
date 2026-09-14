@@ -16,12 +16,14 @@ Requires:
 Steps this runs, per target:
     1. export_ecospold.py's exporter -> EcoSpold v2 XML (schema-valid)
     2. `python -m tidas_tools.import_lca.cli` --from-format ecospold2 --target tidas
-    3. `python -m tidas_tools.validate` --data-format tidas --report-format json
-    4. Zip the TIDAS package contents at the zip root (tidas-import's own
+    3. Add TIDAS lifecycle-model records from PRISM's original model graphs
+    4. `python -m tidas_tools.validate` --data-format tidas --report-format json
+    5. Zip the TIDAS package contents at the zip root (tidas-import's own
        output layout already matches what the TianGong web upload expects)
 
 Output per target, under --out-dir (default: scripts/tidas-export/<slug>/):
     tidas.zip                  - upload this to the TianGong platform
+    tidas-models-only.zip      - add only the model layer after an earlier import
     conversion-report.json     - tidas-import's report
     validation-report.json     - tidas-validate's report (ok/errors/warnings)
 
@@ -127,6 +129,15 @@ def zip_tidas_dir(tidas_dir, zip_path, label):
     print(f"[{label}] wrote {zip_path} ({count} files, ready to upload)")
 
 
+def zip_lifecycle_models(tidas_dir, zip_path, label):
+    model_dir = os.path.join(tidas_dir, "lifecyclemodels")
+    paths = sorted(glob.glob(os.path.join(model_dir, "*.json")))
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+        for path in paths:
+            zf.write(path, arcname=os.path.join("lifecyclemodels", os.path.basename(path)))
+    print(f"[{label}] wrote {zip_path} ({len(paths)} lifecycle model files)")
+
+
 def exclude_reference_data(tidas_dir, label):
     removed = 0
     for category in REFERENCE_DATA_CATEGORIES:
@@ -136,6 +147,117 @@ def exclude_reference_data(tidas_dir, label):
     if removed:
         print(f"[{label}] excluded {removed} generic reference-data record(s) "
               f"({', '.join(sorted(REFERENCE_DATA_CATEGORIES))}) — pass --include-reference-data to keep them")
+
+
+def add_lifecycle_models(exporter, model_rows, tidas_dir, label):
+    """Write the model layer that tidas-tools' EcoSpold2 adapter does not emit."""
+    from tidas_tools.import_lca.model.entities import CanonicalEntity
+    from tidas_tools.import_lca.writers.tidas_json import _lifecycle_model_dataset
+
+    output_dir = os.path.join(tidas_dir, "lifecyclemodels")
+    os.makedirs(output_dir, exist_ok=True)
+
+    for model in model_rows:
+        payload = model["payload"]
+        instances = payload.get("processInstances", [])
+        by_instance_id = {
+            instance["dataSetInternalID"]: instance for instance in instances
+        }
+
+        process_refs = []
+        converted_process_by_instance = {}
+        for instance in instances:
+            source_ref = instance.get("referenceToProcess", {})
+            source_process_id = source_ref.get("refObjectId")
+            source_process = exporter.by_id.get(source_process_id)
+            if not source_process:
+                continue
+            converted_process_id = exporter_process_id(source_process_id)
+            converted_process_by_instance[instance["dataSetInternalID"]] = converted_process_id
+            process_refs.append({
+                "id": converted_process_id,
+                "name": source_process.get("name") or source_ref.get("shortDescription") or "Process",
+                "processType": "UNIT_PROCESS",
+            })
+
+        connections = []
+        for connection in payload.get("connections", []):
+            provider_instance_id = connection.get("fromInstanceId")
+            consumer_instance_id = connection.get("toInstanceId")
+            provider_id = converted_process_by_instance.get(provider_instance_id)
+            consumer_id = converted_process_by_instance.get(consumer_instance_id)
+            provider_instance = by_instance_id.get(provider_instance_id)
+            if not provider_id or not consumer_id or not provider_instance:
+                continue
+
+            source_process_id = provider_instance["referenceToProcess"].get("refObjectId")
+            source_process = exporter.by_id.get(source_process_id)
+            flow_id = reference_output_flow_id(exporter, source_process)
+            if not flow_id:
+                continue
+            connections.append({
+                "providerProcessId": provider_id,
+                "consumerProcessId": consumer_id,
+                "flowRefId": flow_id,
+                "location": "GLO",
+            })
+
+        reference_instance_id = payload.get("modelInformation", {}).get(
+            "quantitativeReference", {}
+        ).get("referenceToReferenceProcess")
+        reference_process_id = converted_process_by_instance.get(reference_instance_id)
+        admin = payload.get("administrativeInformation", {})
+        entity = CanonicalEntity(
+            entity_type="lifecyclemodels",
+            internal_id=model["id"],
+            name=model["name"],
+            raw={
+                "description": model.get("description") or "PRISM LCA product graph",
+                "version": admin.get("dataSetVersion") or "01.01.000",
+                "referenceProcessId": reference_process_id,
+                "processRefs": process_refs,
+                "connections": connections,
+                "sourceTrace": {
+                    "format": "prism-lca",
+                    "sourceObject": model["id"],
+                    "derivedEntity": "lifecyclemodel",
+                },
+            },
+        )
+        output_path = os.path.join(output_dir, f"{model['id']}.json")
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(_lifecycle_model_dataset(entity), f, ensure_ascii=False, indent=2)
+            f.write("\n")
+
+    print(f"[{label}] added {len(model_rows)} TIDAS lifecycle model(s) from PRISM graphs")
+
+
+def exporter_process_id(source_process_id):
+    from export_ecospold import uid5
+
+    return uid5("process", source_process_id)
+
+
+def reference_output_flow_id(exporter, process_row):
+    """Return the converted TIDAS flow UUID for a process's reference output."""
+    if not process_row:
+        return None
+    from export_ecospold import uid5
+
+    payload = process_row.get("payload", {})
+    reference_id = payload.get("processInformation", {}).get(
+        "quantitativeReference", {}
+    ).get("referenceToReferenceFlow")
+    for exchange in payload.get("exchanges", []):
+        if exchange.get("dataSetInternalID") != reference_id:
+            continue
+        flow_row = exporter.resolve_flow(exchange.get("referenceToFlowDataSet", {}))
+        if not flow_row:
+            return None
+        flow_type = flow_row.get("payload", {}).get("modellingAndValidation", {}).get("typeOfDataSet")
+        prefix = "elem_flow" if flow_type == "Elementary flow" else "intermediate_flow"
+        return uid5(prefix, flow_row["id"])
+    return None
 
 
 def repair_from_report(target_dir, report_path, label):
@@ -202,6 +324,7 @@ def export_and_convert(exporter, model_rows, target_dir, label, include_referenc
     print(f"[{label}] converted: {summary}")
 
     tidas_dir = os.path.join(target_dir, "tidas")
+    add_lifecycle_models(exporter, model_rows, tidas_dir, label)
     validation_report = os.path.join(target_dir, "validation-report.json")
     result = run_module(
         "tidas_tools.validate",
@@ -229,6 +352,8 @@ def export_and_convert(exporter, model_rows, target_dir, label, include_referenc
 
     zip_path = os.path.join(target_dir, "tidas.zip")
     zip_tidas_dir(tidas_dir, zip_path, label)
+    models_only_zip = os.path.join(target_dir, "tidas-models-only.zip")
+    zip_lifecycle_models(tidas_dir, models_only_zip, label)
     return True
 
 
