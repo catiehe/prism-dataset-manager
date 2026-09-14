@@ -1,5 +1,10 @@
 # Work Log
 
+## 2026-09-14
+- Rebuilt `supabase/seed.sql` from the live 77-row Supabase dataset (10 models, 18 processes, 31 flows, 4 flow properties, 4 unit groups, and 10 sources). The seed now upserts the live snapshot and removes only the 40 obsolete fixed-id sample rows from the previous 58-row seed.
+- Added `scripts/export_seed.py` so the checked-in SQL snapshot can be regenerated deterministically from `.env` after future intentional live-data changes.
+- Closed Phase 6 without further Model page work: the user confirmed screenshot-level Model synchronization is not required.
+
 ## 2026-09-07
 - Reviewed [tiangong-lca-next](https://github.com/linancn/tiangong-lca-next) to understand the source platform (UmiJS + Ant Design Pro + Supabase LCA authoring tool).
 - Reviewed [calvinw/product-graph-editor](https://github.com/calvinw/product-graph-editor) as the stack to copy: React 19 + Vite 6 + TS + Tailwind v4 + shadcn/ui + GitHub Actions Pages deploy.

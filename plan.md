@@ -284,7 +284,7 @@ generated output, not source): a `.zolca` (openLCA JSON-LD) export for one
 graph, built and validated the same way (real schema fetched from
 `GreenDelta/olca-schema`) before the user redirected to EcoSpold/TIDAS instead.
 
-### Phase 6 — Align this app's UI with the real TianGong platform 🚧 in progress (started 2026-09-12)
+### Phase 6 — Align this app's UI with the real TianGong platform ✅ done (2026-09-14)
 
 Distinct from Phases 1-3 (which matched TianGong's *data schema*): this phase
 matches TianGong's actual rendered *UI* structure, tab-by-tab, verified
@@ -324,11 +324,9 @@ check tab names/counts for types not yet screenshotted.
   same pattern as Flow's "Flow property" tab.
 - **Source, Contact** ✅ verified against real screenshots, no changes
   needed — both already matched TianGong's fields and 2-tab layout.
-- **Model** 🔜 not screenshot-verified. Tab names/count already match
-  TianGong's real locale strings (checked directly against
-  `tiangong-lca/platform` source, not guessed), so no known gap — but unlike
-  the five done above, this hasn't been confirmed against an actual rendered
-  screenshot, so treat as unverified rather than done.
+- **Model** ✅ accepted as-is. Tab names/count match TianGong's real locale
+  strings, and the user confirmed on 2026-09-14 that screenshot-level Model
+  page synchronization is not required.
 
 ---
 
@@ -339,16 +337,10 @@ check tab names/counts for types not yet screenshotted.
 3. Phase 4 — MCP-driven import extended to Models / Flows / Flow Properties /
    Sources / Unit Groups ✅ done
 4. Phase 5 — EcoSpold v2 / TIDAS export tooling ✅ done
-5. Phase 6 — UI parity with the real TianGong platform 🚧 in progress —
-   Model still needs screenshot verification
+5. Phase 6 — UI parity with the real TianGong platform ✅ done
 
-## Outstanding items (not yet done, as of 2026-09-13)
+## Outstanding items (not yet done, as of 2026-09-14)
 
-- `supabase/seed.sql` is stale — still the old 58-row hand-authored dataset,
-  not the 77-row real-MCP-data set from Phase 4. Re-running it today would
-  silently undo Phase 4's live data.
-- Phase 6: Model's detail page hasn't been checked against a real TianGong
-  screenshot (only against its source code) — the other 6 types now are.
 - The three ad hoc export artifacts committed under `scripts/`
   (`prepared-tidas.zip`, `ecospold_all_10_graphs.zip`, the two
   `tidas-*-report.json` files) are one-off generated output sitting in the

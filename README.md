@@ -22,13 +22,21 @@ Supabase must be configured (below) before the app will load any data — withou
 ### Connecting Supabase
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In the Supabase SQL editor, run `supabase/seed.sql` — it creates the `datasets` table, its RLS policies (public read, authenticated insert), and seeds one sample row per type.
+2. In the Supabase SQL editor, run `supabase/seed.sql` — it creates the `datasets` table, its RLS policies, and restores the 77-row MCP-backed data snapshot.
 3. Copy `.env.example` to `.env` and fill in your project's URL and anon key (Project Settings → API):
    ```
    VITE_SUPABASE_URL=
    VITE_SUPABASE_ANON_KEY=
    ```
 4. Restart `npm run dev` — the app now reads/writes through Supabase, and magic-link sign-in (sidebar footer) becomes usable.
+
+After intentional changes to the live dataset, refresh the checked-in snapshot with:
+
+```
+python3 scripts/export_seed.py
+```
+
+The exporter reads the public dataset fields using the Supabase URL and anon key from `.env`. Review and commit the resulting `supabase/seed.sql`.
 
 ### Deploying to GitHub Pages
 
