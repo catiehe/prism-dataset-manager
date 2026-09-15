@@ -1,6 +1,6 @@
 import type { DatasetType } from "@/lib/datasets"
 
-const ENGINE_URL = import.meta.env.VITE_LCA_ENGINE_URL ?? "https://lca-mcp.mathplosion.com"
+const ENGINE_URL = import.meta.env.VITE_LCA_ENGINE_URL ?? "https://lca.mathplosion.com"
 
 export interface ImportedRow {
   temporary_id: string
