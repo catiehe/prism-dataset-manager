@@ -4,6 +4,7 @@ import {
   Component,
   Contact,
   Database,
+  Download,
   FileStack,
   LogOut,
   Ruler,
@@ -95,6 +96,19 @@ export function AppSidebar() {
                   <Link to="/import">
                     <Upload className="size-4" />
                     <span>Import</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Export"
+                  isActive={location.pathname === "/export"}
+                  className={ACTIVE_CLASS}
+                >
+                  <Link to="/export">
+                    <Download className="size-4" />
+                    <span>Export</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

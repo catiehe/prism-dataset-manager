@@ -12,6 +12,7 @@ import { DatasetDetail } from "@/pages/DatasetDetail"
 import { SignIn } from "@/pages/SignIn"
 import { DatasetForm } from "@/pages/DatasetForm"
 import { ImportOpenLca } from "@/pages/ImportOpenLca"
+import { ExportOpenLca } from "@/pages/ExportOpenLca"
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/open-data/:type/:id/edit" element={<DatasetForm />} />
                 <Route path="/open-data/:type/:id" element={<DatasetDetail />} />
                 <Route path="/import" element={<ImportOpenLca />} />
+                <Route path="/export" element={<ExportOpenLca />} />
                 <Route path="/sign-in" element={<SignIn />} />
               </Routes>
             </main>
