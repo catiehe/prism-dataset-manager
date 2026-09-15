@@ -13,13 +13,19 @@ export interface ImportedRow {
 
 export type ImportSummary = Partial<Record<DatasetType, number>>
 
+export interface ImportIssue {
+  code: string
+  message: string
+  details?: Record<string, unknown>
+}
+
 export interface ImportResult {
   format: string
   valid: boolean
   summary: ImportSummary
   datasets: ImportedRow[]
-  warnings: string[]
-  errors: string[]
+  warnings: ImportIssue[]
+  errors: ImportIssue[]
 }
 
 export class OpenLcaImportError extends Error {

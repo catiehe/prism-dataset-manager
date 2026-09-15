@@ -154,7 +154,10 @@ export function ImportOpenLca() {
               ) : (
                 <ul className="list-disc pl-5 text-sm">
                   {result.warnings.map((w, i) => (
-                    <li key={i}>{w}</li>
+                    <li key={i}>
+                      {w.message}
+                      <span className="text-muted-foreground text-xs"> ({w.code})</span>
+                    </li>
                   ))}
                 </ul>
               )}
@@ -171,7 +174,10 @@ export function ImportOpenLca() {
               ) : (
                 <ul className="text-destructive list-disc pl-5 text-sm">
                   {result.errors.map((e, i) => (
-                    <li key={i}>{e}</li>
+                    <li key={i}>
+                      {e.message}
+                      <span className="text-xs opacity-70"> ({e.code})</span>
+                    </li>
                   ))}
                 </ul>
               )}
