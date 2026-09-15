@@ -7,6 +7,7 @@ import {
   FileStack,
   LogOut,
   Ruler,
+  Upload,
   User,
   Workflow,
 } from "lucide-react"
@@ -40,7 +41,8 @@ const ACTIVE_CLASS =
   "data-active:bg-neutral-200 data-active:text-neutral-900 dark:data-active:bg-neutral-700 dark:data-active:text-neutral-50"
 
 export function AppSidebar() {
-  const activeType = useLocation().pathname.match(/^\/open-data\/([^/]+)/)?.[1]
+  const location = useLocation()
+  const activeType = location.pathname.match(/^\/open-data\/([^/]+)/)?.[1]
   const session = useSessionStore((s) => s.session)
 
   return (
@@ -76,6 +78,26 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 )
               })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  tooltip="Import"
+                  isActive={location.pathname === "/import"}
+                  className={ACTIVE_CLASS}
+                >
+                  <Link to="/import">
+                    <Upload className="size-4" />
+                    <span>Import</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

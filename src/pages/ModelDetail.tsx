@@ -15,14 +15,16 @@ import { getDataset, type Dataset } from "@/lib/datasets"
 import { toModelDataSet } from "@/lib/ilcd"
 import { LangRow } from "@/components/ilcd/lang-row"
 
-export function ModelDetail() {
+export function ModelDetail({ dataset: datasetProp }: { dataset?: Dataset } = {}) {
   const { id } = useParams<{ id: string }>()
-  const [dataset, setDataset] = useState<Dataset | null | undefined>(undefined)
+  const [fetched, setFetched] = useState<Dataset | null | undefined>(undefined)
 
   useEffect(() => {
-    if (!id) return
-    getDataset(id).then((d) => setDataset(d ?? null))
-  }, [id])
+    if (datasetProp || !id) return
+    getDataset(id).then((d) => setFetched(d ?? null))
+  }, [id, datasetProp])
+
+  const dataset = datasetProp ?? fetched
 
   if (dataset === undefined) return null
   if (dataset === null) {
@@ -41,9 +43,11 @@ export function ModelDetail() {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-4">
-      <Link to="/open-data/model" className="text-sm text-muted-foreground hover:underline">
-        ← Back to Models
-      </Link>
+      {!datasetProp && (
+        <Link to="/open-data/model" className="text-sm text-muted-foreground hover:underline">
+          ← Back to Models
+        </Link>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>{dataset.name}</CardTitle>
