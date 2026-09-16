@@ -128,13 +128,14 @@ export function ImportOpenLca() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-muted-foreground text-sm">
-            Upload a ZIP in any of these formats — openLCA JSON-LD, ILCD/eILCD XML,
-            or TIDAS JSON.
+            Upload an openLCA JSON-LD, ILCD/eILCD, TIDAS JSON, EcoSpold2, or SimaPro CSV
+            package. EcoSpold2 accepts a ZIP or a single .spold/.xml file. Review the
+            converted datasets before confirming; nothing is written to Supabase during preview.
           </p>
           <input
             ref={fileInputRef}
             type="file"
-            accept=".zip"
+            accept=".zip,.spold,.xml,.csv"
             onChange={handleFileChange}
             disabled={status === "loading"}
             className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground file:hover:bg-primary/80"

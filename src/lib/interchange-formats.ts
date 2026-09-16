@@ -1,4 +1,9 @@
-export type InterchangeFormat = "openlca-json-ld" | "ilcd-xml" | "tidas-json"
+export type InterchangeFormat =
+  | "openlca-json-ld"
+  | "ilcd-xml"
+  | "tidas-json"
+  | "ecospold2"
+  | "simapro-csv"
 
 /** Single source of truth for format identifiers <-> display labels, so
  * adding a format only means adding one entry here instead of hunting
@@ -7,6 +12,8 @@ export const INTERCHANGE_FORMAT_LABELS: Record<InterchangeFormat, string> = {
   "openlca-json-ld": "openLCA JSON-LD",
   "ilcd-xml": "ILCD / eILCD XML",
   "tidas-json": "TIDAS JSON",
+  ecospold2: "EcoSpold2",
+  "simapro-csv": "SimaPro CSV",
 }
 
 export const INTERCHANGE_FORMATS = Object.keys(
