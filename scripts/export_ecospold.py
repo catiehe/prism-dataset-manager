@@ -218,7 +218,7 @@ class GraphExporter:
             personName="PRISM LCA export utility", personEmail="noreply@lca-mcp.mathplosion.com",
             dataPublishedIn=0, isCopyrightProtected="false", accessRestrictedTo=0)
         sub(admin, "fileAttributes", majorRelease=1, minorRelease=0, majorRevision=1, minorRevision=1,
-            defaultLanguage="en", fileGenerator="tiangong-simple/scripts/export_ecospold.py",
+            defaultLanguage="en", fileGenerator="prism-dataset-manager/scripts/export_ecospold.py",
             fileTimestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
 
         return activity_id, ds
