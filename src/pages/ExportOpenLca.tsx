@@ -15,6 +15,7 @@ import {
   OpenLcaExportError,
   type ExportFormat,
 } from "@/lib/openlca-export"
+import { INTERCHANGE_FORMATS, INTERCHANGE_FORMAT_LABELS } from "@/lib/interchange-formats"
 
 type Status = "idle" | "loading" | "error" | "done"
 
@@ -59,13 +60,13 @@ export function ExportOpenLca() {
     <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Export openLCA / ILCD package</CardTitle>
+          <CardTitle>Export dataset package</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-muted-foreground text-sm">
-            Pick a Model and a format. Every dataset in Open Data is sent to the
-            engine, which resolves the dependency closure for that Model and
-            returns a downloadable ZIP.
+            Pick a Model and a format to download a ZIP containing that Model and
+            everything it references — processes, flows, flow properties, unit
+            groups, sources, and contacts.
           </p>
 
           <div className="flex flex-col gap-2">
@@ -100,9 +101,11 @@ export function ExportOpenLca() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="openlca-json-ld">openLCA JSON-LD</SelectItem>
-                <SelectItem value="ilcd-xml">ILCD / eILCD XML</SelectItem>
-                <SelectItem value="tidas-json">TIDAS JSON</SelectItem>
+                {INTERCHANGE_FORMATS.map((f) => (
+                  <SelectItem key={f} value={f}>
+                    {INTERCHANGE_FORMAT_LABELS[f]}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

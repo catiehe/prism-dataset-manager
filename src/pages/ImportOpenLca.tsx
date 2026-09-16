@@ -23,6 +23,7 @@ import {
   type ImportResult,
 } from "@/lib/openlca-import"
 import { commitImport, type ImportCommitReport } from "@/lib/import-persistence"
+import { formatLabel } from "@/lib/interchange-formats"
 import { ModelDetail } from "@/pages/ModelDetail"
 import { useSessionStore } from "@/state/session"
 
@@ -123,12 +124,12 @@ export function ImportOpenLca() {
     <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Import openLCA package</CardTitle>
+          <CardTitle>Import dataset package</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-muted-foreground text-sm">
-            Upload an openLCA JSON-LD ZIP export. Review the converted datasets before
-            confirming; nothing is written to Supabase during preview.
+            Upload a ZIP in any of these formats — openLCA JSON-LD, ILCD/eILCD XML,
+            or TIDAS JSON.
           </p>
           <input
             ref={fileInputRef}
@@ -207,7 +208,10 @@ export function ImportOpenLca() {
             <CardHeader>
               <CardTitle>Summary</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col gap-3">
+              <p className="text-muted-foreground text-sm">
+                Detected format: <span className="text-foreground">{formatLabel(result.format)}</span>
+              </p>
               <Table>
                 <TableHeader>
                   <TableRow>

@@ -1,4 +1,5 @@
 import { DATASET_TYPES, listDatasets, type Dataset, type DatasetType } from "@/lib/datasets"
+import type { InterchangeFormat } from "@/lib/interchange-formats"
 
 const ENGINE_URL = import.meta.env.VITE_LCA_ENGINE_URL ?? "https://lca.mathplosion.com"
 
@@ -12,7 +13,7 @@ const PLURAL: Record<DatasetType, string> = {
   contact: "contacts",
 }
 
-export type ExportFormat = "openlca-json-ld" | "ilcd-xml" | "tidas-json"
+export type ExportFormat = InterchangeFormat
 
 export interface ExportRow {
   id: string
