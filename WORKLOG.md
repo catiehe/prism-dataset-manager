@@ -24,7 +24,21 @@
   only 77 public rows, User A saw its 2 imported rows plus the 77 public rows,
   public deletion affected zero rows, duplicate submission was idempotent, and
   a deliberately dangling reference rolled back completely. No live database
-  mutation or deployment was performed.
+  mutation or deployment was performed during the implementation pass.
+- After the user supplied a scoped Supabase management token, audited the live
+  project (exactly 77 unowned rows and none of the new schema yet), saved a
+  permission-restricted 77-row backup under `/tmp`, and applied the migration
+  through Supabase's official Management API. Post-migration audit confirmed
+  77/77 rows are unowned public data, zero import batches, both new columns,
+  the ownership constraint, four dataset RLS policies, a `security invoker`
+  RPC executable by `authenticated` but not `anon`, and no anonymous access to
+  import batches. REST verification returned all 77 public rows to anonymous
+  readers and rejected anonymous RPC access with HTTP 401.
+- Committed the feature as `3fbdd56`, pushed `main`, and watched GitHub Pages
+  deployment run `35042911958` complete successfully. Verified the production
+  root and new JavaScript asset return HTTP 200 and contain the Confirm Import
+  and My Data UI. A real signed-in package confirmation remains the final
+  user-level smoke test.
 
 ## 2026-09-15
 - User shared `PRISM_FRONTEND_IMPORT_PLAN.md` from `calvinw/life-cycle-assessment-mcp` (branch `catie-import-feature`) — a handoff doc for a deployed, stateless `POST /api/interchange/import/openlca` engine endpoint that converts an openLCA JSON-LD ZIP into PRISM-shaped datasets. This supersedes the browser-side EcoSpold-parsing approach sketched in `plan-import.md`/`ENGINE_IMPORT_EXPORT_PLAN.md` (neither had been started) for the openLCA format specifically — the engine now does the conversion, not the browser.

@@ -8,15 +8,20 @@ Prepared for PRISM LCA (`tiangong-simple`) · 2026-09-16
   row's `source_id`; rows also carry `temporary_id` and normalized `id`). A
   real uploaded-package fixture is still desirable before production rollout.
 - Phase 1: implemented in the migration, seed generator, dataset types, RLS,
-  and ownership-aware list actions. Not applied to the live project yet.
+  and ownership-aware list actions. Applied to the live project and verified.
 - Phase 2: implemented ID remapping, unit tests, the idempotent atomic RPC,
-  Confirm Import UI, completion links, and rollback/reference validation. Not
-  applied to the live project yet.
+  Confirm Import UI, completion links, and rollback/reference validation. The
+  RPC and frontend are live; a real signed-in package import is still pending.
 - Phase 3: partially implemented with Open Data/My Data labels; import history
   and filters remain deferred.
 - Local verification: PostgreSQL 15 executed the seed and migration; two-user,
   anonymous-read, public-write-denial, rollback, and idempotent-retry checks
   passed. TypeScript build, lint, and frontend unit tests also pass.
+- Production verification: the pre-migration backup contained exactly 77
+  rows; the migration preserved all 77 as unowned public rows, created zero
+  import batches, exposed the RPC only to `authenticated`, denied anonymous
+  RPC access with HTTP 401, and the deployed bundle contains the new Confirm
+  Import UI.
 
 ## Goal
 
