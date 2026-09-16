@@ -102,6 +102,7 @@ export function ExportOpenLca() {
               <SelectContent>
                 <SelectItem value="openlca-json-ld">openLCA JSON-LD</SelectItem>
                 <SelectItem value="ilcd-xml">ILCD / eILCD XML</SelectItem>
+                <SelectItem value="tidas-json">TIDAS JSON</SelectItem>
               </SelectContent>
             </Select>
           </div>

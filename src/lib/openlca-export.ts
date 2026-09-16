@@ -12,7 +12,7 @@ const PLURAL: Record<DatasetType, string> = {
   contact: "contacts",
 }
 
-export type ExportFormat = "openlca-json-ld" | "ilcd-xml"
+export type ExportFormat = "openlca-json-ld" | "ilcd-xml" | "tidas-json"
 
 export interface ExportRow {
   id: string
@@ -93,7 +93,10 @@ export async function exportOpenLcaPackage(
   // Content-Disposition isn't exposed to JS under the engine's current CORS
   // config, so the filename is hardcoded from the format instead of read
   // off the response.
-  const filename =
-    format === "openlca-json-ld" ? "prism-export.openlca.zip" : "prism-export.ilcd.zip"
-  return { blob, filename }
+  const FILENAME_BY_FORMAT: Record<ExportFormat, string> = {
+    "openlca-json-ld": "prism-export.openlca.zip",
+    "ilcd-xml": "prism-export.ilcd.zip",
+    "tidas-json": "prism-export.tidas.zip",
+  }
+  return { blob, filename: FILENAME_BY_FORMAT[format] }
 }
