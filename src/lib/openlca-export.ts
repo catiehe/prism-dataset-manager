@@ -12,7 +12,7 @@ const PLURAL: Record<DatasetType, string> = {
   contact: "contacts",
 }
 
-export type ExportFormat = "openlca-json-ld" | "ilcd-xml" | "tidas-json"
+export type ExportFormat = "openlca-json-ld" | "ilcd-xml" | "tidas-json" | "ecospold2" | "simapro-csv"
 
 export interface ExportRow {
   id: string
@@ -97,6 +97,8 @@ export async function exportOpenLcaPackage(
     "openlca-json-ld": "prism-export.openlca.zip",
     "ilcd-xml": "prism-export.ilcd.zip",
     "tidas-json": "prism-export.tidas.zip",
+    ecospold2: "prism-export.ecospold2.zip",
+    "simapro-csv": "prism-export.simapro.csv",
   }
   return { blob, filename: FILENAME_BY_FORMAT[format] }
 }

@@ -59,7 +59,7 @@ export function ExportOpenLca() {
     <div className="mx-auto flex max-w-4xl flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Export openLCA / ILCD package</CardTitle>
+          <CardTitle>Export LCA package</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-muted-foreground text-sm">
@@ -103,6 +103,8 @@ export function ExportOpenLca() {
                 <SelectItem value="openlca-json-ld">openLCA JSON-LD</SelectItem>
                 <SelectItem value="ilcd-xml">ILCD / eILCD XML</SelectItem>
                 <SelectItem value="tidas-json">TIDAS JSON</SelectItem>
+                <SelectItem value="ecospold2">EcoSpold2</SelectItem>
+                <SelectItem value="simapro-csv">SimaPro CSV</SelectItem>
               </SelectContent>
             </Select>
           </div>
