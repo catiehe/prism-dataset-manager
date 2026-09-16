@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { Link } from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -21,9 +22,12 @@ import {
   type ImportedRow,
   type ImportResult,
 } from "@/lib/openlca-import"
+import { commitImport, type ImportCommitReport } from "@/lib/import-persistence"
 import { ModelDetail } from "@/pages/ModelDetail"
+import { useSessionStore } from "@/state/session"
 
 type Status = "idle" | "loading" | "error" | "done"
+type CommitStatus = "idle" | "saving" | "done" | "error"
 
 function toPreviewDataset(row: ImportedRow): Dataset {
   return {
@@ -32,6 +36,9 @@ function toPreviewDataset(row: ImportedRow): Dataset {
     name: row.name,
     description: row.description || null,
     payload: row.payload,
+    created_by: null,
+    visibility: "private",
+    import_batch_id: null,
     created_at: new Date().toISOString(),
   }
 }
@@ -46,10 +53,16 @@ function groupByType(rows: ImportedRow[]): Partial<Record<DatasetType, ImportedR
 
 export function ImportOpenLca() {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const session = useSessionStore((s) => s.session)
   const [status, setStatus] = useState<Status>("idle")
   const [error, setError] = useState<{ code?: string; message: string } | null>(null)
   const [result, setResult] = useState<ImportResult | null>(null)
   const [selected, setSelected] = useState<ImportedRow | null>(null)
+  const [sourceFilename, setSourceFilename] = useState("")
+  const [batchId, setBatchId] = useState(() => crypto.randomUUID())
+  const [commitStatus, setCommitStatus] = useState<CommitStatus>("idle")
+  const [commitError, setCommitError] = useState<string | null>(null)
+  const [commitReport, setCommitReport] = useState<ImportCommitReport | null>(null)
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -57,6 +70,11 @@ export function ImportOpenLca() {
     setStatus("loading")
     setError(null)
     setSelected(null)
+    setSourceFilename(file.name)
+    setBatchId(crypto.randomUUID())
+    setCommitStatus("idle")
+    setCommitError(null)
+    setCommitReport(null)
     try {
       const imported = await importOpenLcaPackage(file)
       setResult(imported)
@@ -71,6 +89,20 @@ export function ImportOpenLca() {
       setStatus("error")
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
+  async function handleConfirmImport() {
+    if (!result || !session) return
+    setCommitStatus("saving")
+    setCommitError(null)
+    try {
+      const report = await commitImport(result, sourceFilename, batchId)
+      setCommitReport(report)
+      setCommitStatus("done")
+    } catch (err) {
+      setCommitError(err instanceof Error ? err.message : "Import couldn't be saved.")
+      setCommitStatus("error")
     }
   }
 
@@ -95,8 +127,8 @@ export function ImportOpenLca() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-muted-foreground text-sm">
-            Upload an openLCA JSON-LD ZIP export. It's converted in your browser session
-            only — nothing is written to Supabase unless a future step adds that.
+            Upload an openLCA JSON-LD ZIP export. Review the converted datasets before
+            confirming; nothing is written to Supabase during preview.
           </p>
           <input
             ref={fileInputRef}
@@ -120,6 +152,57 @@ export function ImportOpenLca() {
 
       {result && (
         <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Confirm import</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              {commitReport ? (
+                <>
+                  <p className="text-sm">
+                    Imported {commitReport.created_count} private datasets successfully.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {DATASET_TYPES.filter(({ type }) => (commitReport.summary[type] ?? 0) > 0).map(
+                      ({ type, label }) => (
+                        <Button key={type} asChild variant="outline" size="sm">
+                          <Link to={`/open-data/${type}`}>
+                            {label} ({commitReport.summary[type]})
+                          </Link>
+                        </Button>
+                      ),
+                    )}
+                  </div>
+                </>
+              ) : session ? (
+                <>
+                  <p className="text-muted-foreground text-sm">
+                    The complete package will be saved atomically as private data owned by{" "}
+                    {session.user.email ?? "your account"}.
+                  </p>
+                  <Button
+                    className="self-start"
+                    onClick={handleConfirmImport}
+                    disabled={commitStatus === "saving" || !result.valid || result.errors.length > 0}
+                  >
+                    {commitStatus === "saving" ? "Importing…" : "Confirm import"}
+                  </Button>
+                </>
+              ) : (
+                <div className="flex flex-col items-start gap-2">
+                  <p className="text-muted-foreground text-sm">
+                    Sign in to save imported datasets as private data. After the magic-link
+                    redirect, select the ZIP again to restore the preview.
+                  </p>
+                  <Button asChild size="sm">
+                    <Link to="/sign-in?next=/import">Sign in to import</Link>
+                  </Button>
+                </div>
+              )}
+              {commitError && <p className="text-destructive text-sm">{commitError}</p>}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Summary</CardTitle>

@@ -78,6 +78,7 @@ export function DatasetList() {
             <TableRow>
               <TableHead className="whitespace-nowrap">Name</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead className="whitespace-nowrap">Scope</TableHead>
               <TableHead className="whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -97,6 +98,9 @@ export function DatasetList() {
                   title={d.description ?? undefined}
                 >
                   {d.description}
+                </TableCell>
+                <TableCell className="whitespace-nowrap text-muted-foreground">
+                  {d.visibility === "public" ? "Open Data" : "My Data"}
                 </TableCell>
                 <TableCell className="whitespace-nowrap">
                   <div className="flex items-center gap-1">
@@ -126,7 +130,7 @@ export function DatasetList() {
                         </a>
                       </Button>
                     )}
-                    {session && (
+                    {session?.user.id === d.created_by && (
                       <>
                         <Button
                           asChild
@@ -157,7 +161,7 @@ export function DatasetList() {
             ))}
             {datasets.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} className="text-muted-foreground">
+                <TableCell colSpan={4} className="text-muted-foreground">
                   No {typeInfo.label.toLowerCase()} yet.
                 </TableCell>
               </TableRow>

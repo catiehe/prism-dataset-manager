@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase"
 import { useSessionStore } from "@/state/session"
 
 export function SignIn() {
+  const [searchParams] = useSearchParams()
   const session = useSessionStore((s) => s.session)
   const [email, setEmail] = useState("")
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
@@ -15,9 +16,12 @@ export function SignIn() {
   )
   const [error, setError] = useState<string | null>(null)
 
-  if (session) {
-    return <Navigate to="/" replace />
-  }
+  const requestedNext = searchParams.get("next")
+  const next = requestedNext?.startsWith("/") && !requestedNext.startsWith("//")
+    ? requestedNext
+    : "/"
+
+  if (session) return <Navigate to={next} replace />
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -27,7 +31,10 @@ export function SignIn() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin + import.meta.env.BASE_URL,
+        emailRedirectTo:
+          window.location.origin
+          + import.meta.env.BASE_URL
+          + `sign-in?next=${encodeURIComponent(next)}`,
       },
     })
     if (error) {

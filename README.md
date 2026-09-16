@@ -22,7 +22,11 @@ Supabase must be configured (below) before the app will load any data — withou
 ### Connecting Supabase
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In the Supabase SQL editor, run `supabase/seed.sql` — it creates the `datasets` table, its RLS policies, and restores the 77-row MCP-backed data snapshot.
+2. In the Supabase SQL editor, run `supabase/seed.sql` to create the tables,
+   owner-scoped RLS policies, and 77-row public MCP-backed snapshot. Then run
+   `supabase/migrations/202609160001_multi_user_import.sql` to install the
+   idempotent atomic-import RPC (the migration is also safe to apply to an
+   existing deployment).
 3. Copy `.env.example` to `.env` and fill in your project's URL and anon key (Project Settings → API):
    ```
    VITE_SUPABASE_URL=

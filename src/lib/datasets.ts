@@ -24,6 +24,9 @@ export interface Dataset {
   name: string
   description: string | null
   payload: Record<string, unknown>
+  created_by: string | null
+  visibility: "public" | "private"
+  import_batch_id: string | null
   created_at: string
 }
 

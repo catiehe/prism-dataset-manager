@@ -1,5 +1,31 @@
 # Work Log
 
+## 2026-09-16
+- Started `PLAN_MULTI_USER_IMPORT.md` implementation without changing the live
+  Supabase project. Added an additive migration that turns the existing
+  `created_by` field into real ownership, adds public/private visibility,
+  protects the 77-row public catalog from ordinary authenticated writes, and
+  isolates private rows through RLS. Updated the reproducible seed and seed
+  exporter to match.
+- Added `import_batches` and an idempotent, `security invoker`
+  `import_datasets(...)` RPC. It validates batch size/shape, allowed dataset
+  types, UUID uniqueness, and every nested `refObjectId`; imports are one
+  transaction and unresolved/inaccessible references roll the whole batch
+  back.
+- Confirmed the engine contract from the real `catie-import-feature` source:
+  payload references use source entity IDs, while each preview row carries
+  `temporary_id`, `source_id`, and normalized `id`. Added frontend preparation
+  that allocates fresh UUIDs and rewrites all three aliases before calling the
+  RPC, plus a Confirm Import UI, ownership labels, owner-only edit/delete
+  actions, completion links, and sign-in return routing.
+- Added Vitest and three focused reference-remapping tests. `npm test`, lint,
+  build, and `git diff --check` pass. Also installed a local PostgreSQL 15 test
+  instance and executed the complete seed+migration: anonymous and User B saw
+  only 77 public rows, User A saw its 2 imported rows plus the 77 public rows,
+  public deletion affected zero rows, duplicate submission was idempotent, and
+  a deliberately dangling reference rolled back completely. No live database
+  mutation or deployment was performed.
+
 ## 2026-09-15
 - User shared `PRISM_FRONTEND_IMPORT_PLAN.md` from `calvinw/life-cycle-assessment-mcp` (branch `catie-import-feature`) — a handoff doc for a deployed, stateless `POST /api/interchange/import/openlca` engine endpoint that converts an openLCA JSON-LD ZIP into PRISM-shaped datasets. This supersedes the browser-side EcoSpold-parsing approach sketched in `plan-import.md`/`ENGINE_IMPORT_EXPORT_PLAN.md` (neither had been started) for the openLCA format specifically — the engine now does the conversion, not the browser.
 - Confirmed via a CORS preflight that the live engine (`https://lca-mcp.mathplosion.com`) already allows this app's origin. Implemented the doc's suggested steps F1-F3 (prove round-trip, show summary, load into a temporary in-browser workspace and view a Model read-only) — **skipped F4** ("wire into the existing calculation flow") per user decision, since this app has no calculation engine to wire into yet (would need to call the `lca_new` MCP in a future feature).

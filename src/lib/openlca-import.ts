@@ -5,10 +5,13 @@ const ENGINE_URL = import.meta.env.VITE_LCA_ENGINE_URL ?? "https://lca.mathplosi
 export interface ImportedRow {
   temporary_id: string
   source_id: string
+  id: string
   type: DatasetType
   name: string
   description: string
   payload: Record<string, unknown>
+  decision?: "create" | "update" | "review"
+  candidate_dataset_id?: string
 }
 
 export type ImportSummary = Partial<Record<DatasetType, number>>

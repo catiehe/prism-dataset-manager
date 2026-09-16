@@ -4,29 +4,66 @@
 
 begin;
 
+create table if not exists import_batches (
+  id uuid primary key,
+  created_by uuid not null default auth.uid() references auth.users(id),
+  source_format text not null,
+  source_filename text,
+  summary jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
 create table if not exists datasets (
   id uuid primary key default gen_random_uuid(),
   type text not null check (type in ('model','process','flow','flow_property','unit_group','source','contact')),
   name text not null,
   description text,
   payload jsonb default '{}',
-  created_by uuid references auth.users,
+  created_by uuid default auth.uid() references auth.users,
+  visibility text not null default 'public' check (visibility in ('public', 'private')),
+  import_batch_id uuid references import_batches(id),
   created_at timestamptz default now()
 );
 
+alter table datasets add column if not exists visibility text;
+alter table datasets add column if not exists import_batch_id uuid references import_batches(id);
+alter table datasets alter column created_by set default auth.uid();
+alter table datasets alter column visibility set default 'public';
+update datasets set visibility = case when created_by is null then 'public' else 'private' end
+where visibility is null;
+alter table datasets alter column visibility set not null;
+
 alter table datasets enable row level security;
+alter table import_batches enable row level security;
+
+revoke all on table import_batches from anon;
+grant select, insert on table import_batches to authenticated;
 
 drop policy if exists "public read" on datasets;
-create policy "public read" on datasets for select using (true);
-
 drop policy if exists "auth write" on datasets;
-create policy "auth write" on datasets for insert to authenticated with check (true);
-
 drop policy if exists "auth update" on datasets;
-create policy "auth update" on datasets for update to authenticated using (true) with check (true);
-
 drop policy if exists "auth delete" on datasets;
-create policy "auth delete" on datasets for delete to authenticated using (true);
+drop policy if exists "read visible datasets" on datasets;
+drop policy if exists "create owned datasets" on datasets;
+drop policy if exists "update owned datasets" on datasets;
+drop policy if exists "delete owned datasets" on datasets;
+
+create policy "read visible datasets" on datasets for select to anon, authenticated
+using (visibility = 'public' or created_by = (select auth.uid()));
+create policy "create owned datasets" on datasets for insert to authenticated
+with check (visibility = 'private' and created_by = (select auth.uid()));
+create policy "update owned datasets" on datasets for update to authenticated
+using (visibility = 'private' and created_by = (select auth.uid()))
+with check (visibility = 'private' and created_by = (select auth.uid()));
+create policy "delete owned datasets" on datasets for delete to authenticated
+using (visibility = 'private' and created_by = (select auth.uid()));
+
+drop policy if exists "read owned import batches" on import_batches;
+drop policy if exists "create owned import batches" on import_batches;
+create policy "read owned import batches" on import_batches for select to authenticated
+using (created_by = (select auth.uid()));
+create policy "create owned import batches" on import_batches for insert to authenticated
+with check (created_by = (select auth.uid()));
 
 -- Snapshot: 77 rows (model=10, process=18, flow=31, flow_property=4, unit_group=4, source=10).
 -- legacy-id-cleanup:start
@@ -157,6 +194,15 @@ on conflict (id) do update set
   name = excluded.name,
   description = excluded.description,
   payload = excluded.payload,
+  created_by = null,
+  visibility = 'public',
+  import_batch_id = null,
   created_at = excluded.created_at;
+
+alter table datasets alter column visibility set default 'private';
+
+alter table datasets drop constraint if exists datasets_private_owner_check;
+alter table datasets add constraint datasets_private_owner_check
+check (visibility <> 'private' or created_by is not null);
 
 commit;
